@@ -3465,6 +3465,10 @@ PrefabInstance:
       propertyPath: lslStreamName
       value: Zak_TurningAttention_LSL
       objectReference: {fileID: 0}
+    - target: {fileID: 11482054, guid: 341f3d812511a334eb88d59274891c3a, type: 3}
+      propertyPath: lslStreamType
+      value: Markers
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 341f3d812511a334eb88d59274891c3a, type: 3}
 --- !u!4 &1213907653 stripped
@@ -5582,6 +5586,9 @@ MonoBehaviour:
   HasRun: 0
   StimulusShown: 0
   PosnerList: []
+  StreamName: Unity.HeadPositionStream
+  StreamType: Unity.StreamType
+  StreamId: UnityStreamID1
 --- !u!20 &1725982601
 Camera:
   m_ObjectHideFlags: 0

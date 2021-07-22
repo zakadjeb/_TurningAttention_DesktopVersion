@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 using System;
+using LSL;
 
 public class PosnerParadigm : MonoBehaviour
 {
@@ -20,16 +22,41 @@ public class PosnerParadigm : MonoBehaviour
     public bool HasRun = false;             // Boolean to reset the trial number of the posner paradigm
     public bool StimulusShown = false;      // Boolean for the stimulus
     public List<string> PosnerList;         // The list of order for the posner paradigm
+
+    [Header("LSL String")]
+    private liblsl.StreamOutlet outlet;
+    private float[] cameraPos;
+    public string StreamName = "Unity.HeadPositionStream";
+    public string StreamType = "Unity.StreamType";
+    public string StreamId = "UnityStreamID1";
+
     void Start()
     {
+        // Finding gamobjects
         m = GameObject.Find("Manager").GetComponent<Manager>();
         XRRig = GameObject.Find("XRRig");
         PosnerCanvas = XRRig.transform.Find("PosnerCanvas").gameObject;
+
+        // LSL setup
+        liblsl.StreamInfo streamInfo = new liblsl.StreamInfo(StreamName,StreamType,3,Time.fixedDeltaTime * 1000, liblsl.channel_format_t.cf_float32);
+        liblsl.XMLElement chan = streamInfo.desc().append_child("Positions");
+        chan.append_child("Position").append_child_value("Label", "X");
+        chan.append_child("Position").append_child_value("Label", "Y");
+        chan.append_child("Position").append_child_value("Label", "Z");
+        outlet = new liblsl.StreamOutlet(streamInfo);
+        cameraPos = new float[3];
     }
 
     // Update is called once per frame
     void Update()
     {
+        // LSL updating position
+        Vector3 pos = gameObject.transform.position;
+        cameraPos[0] = pos.x;
+        cameraPos[1] = pos.y;
+        cameraPos[2] = pos.z;
+        outlet.push_sample(cameraPos);
+
         if (m.NewTrial){
             CurrentPosnerTrial = 0;
             NumberOfClicks = 10;
